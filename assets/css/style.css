@@ -1,0 +1,232 @@
+:root {
+  --dark-bg: #121212;
+  --dark-surface: #1e1e1e;
+  --dark-surface-2: #2a2a2a;
+  --dark-text: #e0e0e0;
+  --dark-text-secondary: #b0b0b0;
+  --dark-border: #2c2c2c;
+  --dark-hover: #2f2f2f;
+  --accent-color: #ffbc00;
+  --success-color: #2f855a;
+  --danger-color: #c53030;
+  --primary-color: #2c5282;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-color {
+  background-color: var(--dark-surface);
+  padding: 12px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.header-color .navbar-brand {
+  color: var(--dark-text);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header-color .navbar-brand:hover {
+  color: var(--accent-color);
+}
+
+.nav-menu a {
+  color: var(--dark-text-secondary);
+  font-size: 18px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+  color: var(--accent-color);
+}
+
+.product-card, .category-card, .info-card {
+  background-color: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.product-card:hover, .category-card:hover, .info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  background-color: var(--dark-hover);
+}
+
+.card-title {
+  color: var(--dark-text);
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--dark-text);
+}
+
+.btn-primary:hover {
+  background-color: #3a6ba7;
+  border-color: #3a6ba7;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.btn-success:hover {
+  background-color: #38a169;
+  border-color: #38a169;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  background-color: var(--dark-surface-2);
+  border: 1px solid var(--dark-border);
+  color: var(--dark-text);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  background-color: var(--dark-hover);
+  border-color: var(--primary-color);
+  color: var(--dark-text);
+  box-shadow: 0 0 0 0.2rem rgba(44, 82, 130, 0.25);
+}
+
+.table {
+  color: var(--dark-text);
+}
+
+.table thead th {
+  background-color: var(--dark-surface);
+  border-bottom: 2px solid var(--dark-border);
+}
+
+.table td,
+.table th {
+  border-color: var(--dark-border);
+}
+
+.dropdown-menu {
+  background-color: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+}
+
+.dropdown-item {
+  color: var(--dark-text);
+}
+
+.dropdown-item:hover {
+  background-color: var(--dark-hover);
+  color: var(--accent-color);
+}
+
+.modal-content {
+  background-color: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--dark-border);
+}
+
+.breadcrumb {
+  background-color: var(--dark-surface);
+  border-radius: 0.5rem;
+}
+
+.breadcrumb-item {
+  color: var(--dark-text-secondary);
+}
+
+.breadcrumb-item.active {
+  color: var(--dark-text);
+}
+
+.alert-success {
+  background-color: var(--success-color);
+  border-color: #38a169;
+  color: var(--dark-text);
+}
+
+.alert-danger {
+  background-color: var(--danger-color);
+  border-color: #e53e3e;
+  color: var(--dark-text);
+}
+
+.price {
+  color: #4caf50 !important;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    width: 95%;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.product-image {
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.admin-panel {
+  background-color: var(--dark-surface);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.admin-panel .table {
+  background-color: var(--dark-surface-2);
+}
+
+
+footer {
+  background-color: var(--dark-surface);
+  color: var(--dark-text-secondary);
+  border-top: 1px solid var(--dark-border);
+  padding: 20px 0;
+  margin-top: 40px;
+}

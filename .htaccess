@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteBase /site/
+
+RewriteRule ^assets/ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
