@@ -164,23 +164,7 @@ $this->Title = $title ?? 'Деталі товару';
     <?php endif; ?>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.dataset.productId;
-                fetch(`/site/cart/add?product_id=${productId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Товар додано до кошика!');
-                            document.getElementById('cart-count').textContent = data.count;
-                        } else {
-                            alert(data.message);
-                        }
-                    });
-            });
-        });
-    });
+ 
 </script>
 <style>
     .product-image-container {

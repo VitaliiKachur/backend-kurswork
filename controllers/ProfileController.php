@@ -78,7 +78,8 @@ class ProfileController extends Controller
                     $this->post->city,
                     $this->post->date_of_birth
                 );
-                return $this->redirect('/site/profile/registered');
+                $this->addSuccessMessage('Реєстрація успішна! Тепер ви можете увійти.');
+                return $this->redirect('/site/profile/login');
             }
         }
         return $this->render();
@@ -94,69 +95,107 @@ class ProfileController extends Controller
     public function actionLogout()
     {
         Customers::LogoutUser();
-        return $this->redirect('/site/profile/login');
+        return $this->redirect('/site');
     }
+
+    public function actionCheckEmail()
+    {
+        if (!$this->isGet) {
+            return;
+        }
+        
+        $email = $this->get->email ?? '';
+        $customer = Customers::FindByEmail($email);
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'exists' => !empty($customer)
+        ]);
+        exit;
+    }
+
     public function actionOrders()
-{
-    $customer = \models\Customers::isUserLogged() ? \core\Core::get()->session->get('customer') : null;
-    if (!$customer) {
-        $this->addErrorMessage('Будь ласка, увійдіть для перегляду замовлень');
-        return $this->redirect('/site/profile/login');
+    {
+        $customer = \models\Customers::isUserLogged() ? \core\Core::get()->session->get('customer') : null;
+        if (!$customer) {
+            $this->addErrorMessage('Будь ласка, увійдіть для перегляду замовлень');
+            return $this->redirect('/site/profile/login');
+        }
+
+        $orders = \core\Core::get()->db->select('orders', '*', ['CustomerID' => $customer['CustomerID']]);
+
+        $this->template->setParams([
+            'orders' => $orders,
+            'title' => 'Мої замовлення'
+        ]);
+        return $this->render('views/profile/orders.php');
     }
 
-    $orders = \core\Core::get()->db->select('orders', '*', ['CustomerID' => $customer['CustomerID']]);
+    public function actionUpdate()
+    {
+        $customer = Customers::isUserLogged() ? Core::get()->session->get('customer') : null;
 
-    $this->template->setParams([
-        'orders' => $orders,
-        'title' => 'Мої замовлення'
-    ]);
-    return $this->render('views/profile/orders.php');
-}
+        if (!$customer) {
+            $this->addErrorMessage('Будь ласка, увійдіть для оновлення профілю');
+            return $this->redirect('/site/profile/login');
+        }
 
-public function actionUpdate()
-{
-    $customer = Customers::isUserLogged() ? Core::get()->session->get('customer') : null;
+        if ($this->isPost) {
+            try {
+                if ($this->post->email !== $customer['Email']) {
+                    $existingCustomer = Customers::FindByEmail($this->post->email);
+                    if (!empty($existingCustomer)) {
+                        throw new \Exception('Цей email вже використовується іншим користувачем');
+                    }
+                }
 
-    if (!$customer) {
-        $this->addErrorMessage('Будь ласка, увійдіть для оновлення профілю');
-        return $this->redirect('/site/profile/login');
-    }
+                $updatedData = [
+                    'FirstName' => $this->post->first_name,
+                    'LastName' => $this->post->last_name,
+                    'Email' => $this->post->email,
+                    'Phone' => $this->post->phone,
+                    'AddressClient' => $this->post->address,
+                    'City' => $this->post->city
+                ];
 
-    if ($this->isPost) {
-        $updatedData = [
-            'FirstName' => $this->post->first_name,
-            'LastName' => $this->post->last_name,
-            'Email' => $this->post->email,
-            'Phone' => $this->post->phone,
-            'AddressClient' => $this->post->address,
-            'City' => $this->post->city
-        ];
-        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '/site/assets/images/profile/';
-            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . $uploadDir;
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
-            $ext = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
-            $fileName = 'profile_' . $customer['CustomerID'] . '_' . time() . '.' . $ext;
-            $filePath = $uploadPath . $fileName;
-            if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $filePath)) {
-                $updatedData['ProfilePhoto'] = $uploadDir . $fileName;
+                if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = '/site/assets/images/profile/';
+                    $uploadPath = $_SERVER['DOCUMENT_ROOT'] . $uploadDir;
+                    if (!is_dir($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+                    $ext = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
+                    $fileName = 'profile_' . $customer['CustomerID'] . '_' . time() . '.' . $ext;
+                    $filePath = $uploadPath . $fileName;
+                    if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $filePath)) {
+                        $updatedData['ProfilePhoto'] = $uploadDir . $fileName;
+                    }
+                }
+
+               
+                Core::get()->db->update('customers', $updatedData, ['CustomerID' => $customer['CustomerID']]);
+                
+                $customer = array_merge($customer, $updatedData);
+                Core::get()->session->set('customer', $customer);
+                
+                $this->addSuccessMessage('Дані успішно оновлено');
+                return $this->redirect('/site/profile');
+                
+            } catch (\Exception $e) {
+                $this->addErrorMessage($e->getMessage());
+                $this->template->setParams([
+                    'customer' => $customer,
+                    'title' => 'Оновлення профілю'
+                ]);
+                return $this->render('views/profile/index.php');
             }
         }
-        Core::get()->db->update('customers', $updatedData, ['CustomerID' => $customer['CustomerID']]);
 
-        $customer = array_merge($customer, $updatedData);
-        Core::get()->session->set('customer', $customer);
-        $this->addErrorMessage('Дані успішно оновлено');
-        return $this->redirect('/site/profile');
+        $this->template->setParams([
+            'customer' => $customer,
+            'title' => 'Оновлення профілю'
+        ]);
+
+        return $this->render('views/profile/index.php');
     }
-
-    $this->template->setParams([
-        'customer' => $customer,
-        'title' => 'Оновлення профілю'
-    ]);
-
-    return $this->render('views/profile/index.php');
-}
 }

@@ -1,5 +1,6 @@
 <?php
 /** @var array $items */
+
 /** @var float $total */
 $this->Title = $title ?? 'Оформлення замовлення';
 

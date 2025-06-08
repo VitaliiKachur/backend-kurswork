@@ -41,6 +41,6 @@ $this->Title = 'Вхід';
 
     <p>
         Ще не зареєстровані?
-        <a href="/chatter/profile/register">Зареєструватися</a>
+        <a href="/site/profile/register">Зареєструватися</a>
     </p>
 </div>

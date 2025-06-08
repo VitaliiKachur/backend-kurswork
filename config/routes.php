@@ -25,6 +25,7 @@ return [
     '/profile/logout' => ['ProfileController', 'logout'],
     '/profile/orders' => ['ProfileController', 'orders'],
     '/profile/update' => ['ProfileController', 'update'],
+    '/profile/check-email' => ['ProfileController', 'checkEmail'],
     
     '/cart' => ['CartController', 'index'],
     '/cart/add' => ['CartController', 'add'],
