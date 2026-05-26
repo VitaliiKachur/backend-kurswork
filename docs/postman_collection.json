@@ -1,0 +1,261 @@
+{
+  "info": {
+    "name": "TekhOk Store API",
+    "description": "Postman collection for two internal JSON endpoints of the TekhOk PHP MVC online store.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost/site",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "quantity",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "customer@example.com",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Cart - Add Product",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cart/add?product_id={{productId}}&quantity={{quantity}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cart",
+            "add"
+          ],
+          "query": [
+            {
+              "key": "product_id",
+              "value": "{{productId}}",
+              "description": "Product identifier from the products table."
+            },
+            {
+              "key": "quantity",
+              "value": "{{quantity}}",
+              "description": "Quantity to add. Defaults to 1 in the application when omitted."
+            }
+          ]
+        },
+        "description": "Adds a product to the authenticated customer's cart. Requires an active PHP session cookie after login."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/add?product_id=1&quantity=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "add"
+              ],
+              "query": [
+                {
+                  "key": "product_id",
+                  "value": "1"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"success\": true,\n  \"count\": 3\n}"
+        },
+        {
+          "name": "Unauthorized",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart/add?product_id=1&quantity=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "add"
+              ],
+              "query": [
+                {
+                  "key": "product_id",
+                  "value": "1"
+                },
+                {
+                  "key": "quantity",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"success\": false,\n  \"message\": \"Будь ласка, увійдіть\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Profile - Check Email",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/profile/check-email?email={{email}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "profile",
+            "check-email"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "{{email}}",
+              "description": "Email address to check."
+            }
+          ]
+        },
+        "description": "Checks whether a customer email already exists in the customers table."
+      },
+      "response": [
+        {
+          "name": "Email Exists",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile/check-email?email=customer@example.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "check-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "customer@example.com"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"exists\": true\n}"
+        },
+        {
+          "name": "Email Available",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile/check-email?email=new@example.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "check-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "new@example.com"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"exists\": false\n}"
+        }
+      ]
+    }
+  ]
+}
+
