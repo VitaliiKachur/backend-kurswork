@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: TekhOk Store API
+  version: 1.0.0
+  description: >
+    Internal JSON endpoints used by the TekhOk PHP MVC online store.
+    The application uses PHP session cookies for authenticated customer actions.
+servers:
+  - url: http://localhost/site
+    description: Local WAMP environment
+tags:
+  - name: Cart
+    description: Shopping cart operations
+  - name: Profile
+    description: Customer profile helpers
+paths:
+  /cart/add:
+    get:
+      tags:
+        - Cart
+      summary: Add product to cart
+      description: Adds a product to the authenticated customer's cart and returns the updated cart item count.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          description: Product identifier from the `products` table.
+          schema:
+            type: integer
+            example: 12
+        - name: quantity
+          in: query
+          required: false
+          description: Quantity to add. Defaults to 1 when omitted.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 2
+      responses:
+        "200":
+          description: JSON result of the add-to-cart operation.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/CartAddSuccess"
+                  - $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                success:
+                  summary: Product added
+                  value:
+                    success: true
+                    count: 3
+                unauthorized:
+                  summary: Customer is not logged in
+                  value:
+                    success: false
+                    message: "Будь ласка, увійдіть"
+                outOfStock:
+                  summary: Requested quantity is not available
+                  value:
+                    success: false
+                    message: "Неможливо додати більше товару, ніж є в наявності. Доступно: 5"
+  /profile/check-email:
+    get:
+      tags:
+        - Profile
+      summary: Check whether email exists
+      description: Checks if a customer with the provided email already exists.
+      parameters:
+        - name: email
+          in: query
+          required: true
+          description: Email address to validate.
+          schema:
+            type: string
+            format: email
+            example: customer@example.com
+      responses:
+        "200":
+          description: Email availability result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailCheckResponse"
+              examples:
+                exists:
+                  summary: Email already registered
+                  value:
+                    exists: true
+                available:
+                  summary: Email is available
+                  value:
+                    exists: false
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: PHPSESSID
+      description: PHP session cookie created after customer login.
+  schemas:
+    CartAddSuccess:
+      type: object
+      required:
+        - success
+        - count
+      properties:
+        success:
+          type: boolean
+          example: true
+        count:
+          type: integer
+          description: Total quantity of products in the customer's cart.
+          example: 3
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Товар не знайдено"
+    EmailCheckResponse:
+      type: object
+      required:
+        - exists
+      properties:
+        exists:
+          type: boolean
+          description: True when email is already used by an existing customer.
+          example: false
+
